@@ -28,14 +28,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Ensure both `similarity` and `error` are passed
-app.get('/', (req, res) => res.json({ similarity: null, error: null }));
+// app.get('/', (req, res) => res.render('index', { similarity: null, error: null }));
 
 app.post('/compare', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (req, res) => {
     const { text1, text2 } = req.body;
 
-    const handleError = (message) => {
-        res.json({ similarity: null, error: message });
-    };
+    // const handleError = (message) => {
+    //     // res.render('index', { similarity: null, error: message });
+    // };
 
     if (text1 && text2) {
         const filePath1 = path.join(__dirname, 'uploads', 'input1.txt');
@@ -44,7 +44,7 @@ app.post('/compare', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (req
         fs.writeFileSync(filePath1, text1, 'utf-8');
         fs.writeFileSync(filePath2, text2, 'utf-8');
 
-        exec(`python "python/compare.py" "${filePath1}" "${filePath2}"`, (error, stdout) => {
+        exec(`python3 "python/compare.py" "${filePath1}" "${filePath2}"`, (error, stdout) => {
             if (error) return handleError('Error processing texts: Please check your inputs and try again.');
             // res.render('index', { similarity: stdout.trim(), error: null });
             res.json({ similarity: stdout.trim() });
@@ -55,7 +55,7 @@ app.post('/compare', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (req
         const file1 = req.files['file1'][0].path;
         const file2 = req.files['file2'][0].path;
 
-        exec(`python "python/compare.py" "${file1}" "${file2}"`, (error, stdout) => {
+        exec(`python3 "python/compare.py" "${file1}" "${file2}"`, (error, stdout) => {
             if (error) return handleError('Error processing files: Please ensure the files are valid text files.');
             // res.render('index', { similarity: stdout.trim(), error: null });
             res.json({ similarity: stdout.trim() });
