@@ -33,9 +33,9 @@ const upload = multer({ storage });
 app.post('/compare', upload.fields([{ name: 'file1' }, { name: 'file2' }]), (req, res) => {
     const { text1, text2 } = req.body;
 
-    // const handleError = (message) => {
-    //     // res.render('index', { similarity: null, error: message });
-    // };
+    const handleError = (message) => {
+        res.render('index', { similarity: null, error: message });
+    };
 
     if (text1 && text2) {
         const filePath1 = path.join(__dirname, 'uploads', 'input1.txt');
